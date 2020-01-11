@@ -13,6 +13,7 @@ struct Node{
 	Node* up = nullptr;
 	
 	Node() noexcept = default;
+	Node(const key_type k, value_type v): key{k}, value{v}{}
 };
 
 template < typename key_type, typename value_type, typename cmp = std::less<key_type> >
@@ -22,7 +23,7 @@ class BSTiterator {
 		node *current;
 	public:
 		BSTiterator() noexcept = default;
-		BSTiterator(node n) : current(n){}
+		BSTiterator(node *n) : current{n}{}
 
 		//PRE INCREMENT
 		/*
@@ -37,7 +38,7 @@ class BSTiterator {
 template < typename key_type, typename value_type, typename cmp = std::less<key_type> >
 class BST{
 	using node = struct Node<key_type, value_type>;
-	std::unique_ptr<node> root;
+	std::unique_ptr<node> root{};
 	cmp lesser;
 
 	private:
@@ -73,7 +74,25 @@ class BST{
 
 
 		//'INSERT' FUNCTION
-		//std::pair<iterator, bool> insert(const std::pair<const key_type, value_type>& x);
+		std::pair<iterator, bool> insert(const std::pair<const key_type, value_type>& x){
+			bool is_added = false;
+
+			if(root.get()){
+				std::cout<<"Let's see where to put it"<<std::endl;
+
+				std::pair<iterator, bool> result(iterator(root.get()), is_added);
+				return result;
+							}
+			else{
+				std::cout<<"Adding the first root"<<std::endl;
+				root.reset(new node(x.first, x.second));
+				is_added = true;
+
+				std::pair<iterator, bool> result(iterator(root.get()), is_added);
+				return result;
+			}
+
+		}
 
 		/*
 		std::pair<iterator, bool> insert(const pair_type& x);
@@ -96,14 +115,8 @@ class BST{
 		value_type& operator[](key_type&& x);
 };
 
-/*
-template < typename key_type, typename value_type, typename cmp = std::less<key_type> >
-void BST<key_type,value_type,cmp>::clear()
-{
-	std::cout<<"Resetting the tree" << std::endl;	
-}
-
-*/
 int main(){
 	BST<int, char> tree;
+	tree.insert({1,4});
+	tree.insert({2,5});
 }

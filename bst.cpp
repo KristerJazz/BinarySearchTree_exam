@@ -24,10 +24,13 @@ class BSTiterator {
 	private:
 		using node = struct Node<key_type, value_type>;
 		node *current;
+
 	public:
 		explicit BSTiterator(node *n) : current{n}{}
 
 		using iterator_category = std::forward_iterator_tag;
+		node& operator*() {return *current;}
+		node* operator->() const {return current;}
 
 		//PRE INCREMENT
 		/*
@@ -65,19 +68,19 @@ class BST{
 		/////////////////////ITERATOR//////////////
 		using iterator = class BSTiterator<key_type, value_type>;
 		using const_iterator = class BSTiterator<const key_type, value_type>;
-		/*	
-		iterator begin() noexcept {
-			node* tmp = root.get()
-			while tmp{
 
+		iterator begin() noexcept {
+			node* tmp = root.get();
+			if(!tmp) return iterator{nullptr};
+
+			while (tmp->left){
+				tmp = tmp->left.get();
 			}
-				
-			}
-			else
-				return iterator{nullptr}
-		};
-		*/
-		//iterator end();
+			std::cout<< tmp << std::endl;
+			return iterator{tmp};
+		}
+		
+		iterator end(){ return iterator{nullptr};}
 
 		//const_iterator begin const;
 		//const_iterator end const;
@@ -113,6 +116,7 @@ class BST{
 						itr = itr->left.get();
 					}
 					else{
+						//std::cout<<x.second<<std::endl;
 						itr->left.reset(new node(x.first, x.second, itr));
 						itr = itr->left.get();
 						break;
@@ -152,13 +156,19 @@ class BST{
 		*/
 		
 		//INDEXING OPERATORS
-		value_type& operator[](const key_type& x);
+		value_type& operator[](const key_type& x){
+		
+		}
 		value_type& operator[](key_type&& x);
 };
 
 int main(){
 	BST<int, char> tree;
 	tree.insert({5,4});
-	tree.insert({2,5});
+	tree.insert({2,1});
 	tree.insert({3,5});
+	tree.insert({1,4});
+	auto first = tree.begin();
+	std::cout << first->key <<std::endl;
+	//std::cout<< tree[2] <<std::endl;
 }

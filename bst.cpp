@@ -94,42 +94,11 @@ class BST{
 		//'INSERT' FUNCTION
 		std::pair<iterator, bool> insert(const std::pair<const key_type, value_type>& x){
 			bool is_added = false;
+			node* itr = root.get();
 
-			//if key in key_list return std::pair<itr, false>;
-
-			if(root.get()){
-				std::cout<<"Let's see where to put it"<<std::endl;
-				node* itr = root.get();
-				while(itr){
-					if (lesser(x.first, itr->key)){
-						if(itr->left){
-							itr = itr->left.get();
-						}
-						else{
-							itr->left.reset(new node(x.first, x.second, itr));
-							itr = itr->left.get();
-							break;
-						}
-					}
-
-					else{
-						if(itr->right){
-							itr = itr->right.get();
-						}
-						else{
-							itr->right.reset(new node(x.first, x.second, itr));
-							itr = itr->right.get();
-							break;
-						}
-
-					}
-				}
-				std::pair<iterator, bool> result(iterator(itr), is_added);
-				return result;
-
-			}
-			//FIRST NODE
-			else{
+			//if key in key_list find() itr
+			//return std::pair<itr, false>;
+			if (!root.get()){
 				std::cout<<"Adding the first root"<<std::endl;
 				root.reset(new node(x.first, x.second));
 				is_added = true;
@@ -137,6 +106,33 @@ class BST{
 				return result;
 			}
 
+			std::cout<<"Let's see where to put it"<<std::endl;
+			while(itr){
+				if (lesser(x.first, itr->key)){
+					if(itr->left){
+						itr = itr->left.get();
+					}
+					else{
+						itr->left.reset(new node(x.first, x.second, itr));
+						itr = itr->left.get();
+						break;
+					}
+				}
+
+				else{
+					if(itr->right){
+						itr = itr->right.get();
+					}
+					else{
+						itr->right.reset(new node(x.first, x.second, itr));
+						itr = itr->right.get();
+						break;
+					}
+
+				}
+			}
+			std::pair<iterator, bool> result(iterator(itr), is_added);
+			return result;
 		}
 
 		/*

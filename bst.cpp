@@ -74,10 +74,7 @@ class BST{
 
 	public:
 		BST() noexcept = default;
-		//BST(BST&& b) noexcept = default;
-		//insert more constructor codes//
-
-		///////////////////////COPY//////////
+		//COPY
 		BST(const BST &other_tree);
 		//copy-assignment
 		BST& operator= (const BST &other_tree){
@@ -88,6 +85,11 @@ class BST{
 			return *this;
 		}
 		//////////////////////MOVE////////////////
+  		BST(BST&& other_tree) noexcept = default;
+		//List(const List& l);
+		//List& operator=(const List& l);
+
+
 		/*
 		BST ( BST&& other_tree ) : root{ std::move( other_tree.root ) },
 			    tail{ std::move( T_other.tail ) } {}
@@ -202,10 +204,10 @@ class BST{
 		*/
 		value_type& operator[](key_type&& x){
 			iterator found{find(x)}; 
-			value_type random;
 			if(found != end()) return found->value;
 			else {
-				insert({x,0});
+				auto itr = insert({x,0});
+				//return itr.first;
 			}
 		}
 
@@ -225,7 +227,7 @@ int main(){
 	tree.insert({3,5});
 	//std::pair<int, int> a = std::make_pair(1,4);
 	//tree.insert(a);
-	auto found = tree.find(2);
+	//auto found = tree.find(2);
 	std::cout<< tree[2] <<std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;

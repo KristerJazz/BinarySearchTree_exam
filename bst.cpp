@@ -133,9 +133,9 @@ class BST{
 		
 		void print();
 		void clear(){ root.reset();}
-		using ex = struct MyException();
+		using ex = struct MyExceptions();
 		void balance(){
-			if (!root.get()) throw ex(); 
+			//if (!root.get()) throw ex{"WATCH OUT! Empty tree cannot be balanced"};
 			std::vector<node*> nodes;
 			iterator itr = begin();
 			iterator stop = end();
@@ -275,12 +275,9 @@ class BST{
 
 };
 
-struct MyException : public std::exception
-{
-	const char * what () const throw ()
-    {
-    	return "C++ Exception";
-    }
+struct MyExceptions {
+	std::string message;
+	MyExceptions(const std::string &s): message{s} {};
 };
 
 int main(){
@@ -290,15 +287,9 @@ int main(){
 	BST<int, int> tree;
 
 	std::cout<<"Inserting random key value pairs"<< std::endl;
+	int N=1000;
+	for (int i=0; i<N; i++) tree.insert({i,5});
 	/*
-	tree.insert(std::make_pair(5,5));
-	tree.insert({2,1});
-	tree.insert({3,5});
-	tree.insert({6,5});
-	tree.insert({1,5});
-	tree.insert({4,5});
-	tree.insert({7,5});
-	for (int i=1; i<8; i++) tree.insert({i,5});
 	//tree.insert({8,5});
 	//std::cout<< tree[8] <<std::endl;
 	//std::pair<int, int> a = std::make_pair(1,4);

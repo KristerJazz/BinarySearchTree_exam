@@ -76,17 +76,14 @@ class BST{
 			while (tmp->left){
 				tmp = tmp->left.get();
 			}
-			std::cout<< tmp << std::endl;
 			return iterator{tmp};
 		}
-		
-		iterator end(){ return iterator{nullptr};}
-
-		//const_iterator begin const;
-		//const_iterator end const;
-
+		//const_iterator begin	()
 		//const_iterator cbegin const;
-		//const_iterator cend() const;
+		iterator end(){ return iterator{nullptr};}
+		//const_iterator end() { return const_iterator{nullptr};}
+
+		const_iterator cend() { return const_iterator{nullptr};}
 
 		//Auxillary functions
 		void print();
@@ -138,22 +135,22 @@ class BST{
 			std::pair<iterator, bool> result(iterator(itr), is_added);
 			return result;
 		}
+		//std::pair<iterator, bool> insert(const pair_type& x);
+		//std::pair<iterator, bool> insert(pair_type&& x);
 
-		/*
-		std::pair<iterator, bool> insert(const pair_type& x);
-		std::pair<iterator, bool> insert(pair_type&& x);
-
-		iterator begin();
-		const_iterator cbegin() const;
-		const_iterator begin() const;
-
-		iterator end();
-		const_iterator end() const;
-		const_iterator cend() const;
-
-		iterator find(const key_type& x);
-		const_iterator find(const key_type& x) const;
-		*/
+		iterator find(const key_type& x){
+			node* itr = root.get();
+			while(itr->key != x){
+				if(lesser(x, root->key)){
+					itr = itr->left.get();
+				}
+				else{
+					itr = itr->right.get();
+				}
+			}
+			return iterator(itr);
+		}
+		//const_iterator find(const key_type& x) const;
 		
 		//INDEXING OPERATORS
 		value_type& operator[](const key_type& x){
@@ -169,6 +166,7 @@ int main(){
 	tree.insert({3,5});
 	tree.insert({1,4});
 	auto first = tree.begin();
-	std::cout << first->key <<std::endl;
+	auto found = tree.find(2);
+	std::cout << found->key <<std::endl;
 	//std::cout<< tree[2] <<std::endl;
 }

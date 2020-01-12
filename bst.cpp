@@ -130,9 +130,12 @@ class BST{
 		const_iterator cend() { return const_iterator{nullptr};}
 
 		//Auxillary functions
+		
 		void print();
 		void clear(){ root.reset();}
+		using ex = struct MyException();
 		void balance(){
+			if (!root.get()) throw ex(); 
 			std::vector<node*> nodes;
 			iterator itr = begin();
 			iterator stop = end();
@@ -226,6 +229,8 @@ class BST{
 					itr = itr->right.get();
 				}
 			}
+
+			if(!itr) std::cout<<"Key not found"<<std::endl;
 			return iterator(itr);
 		}
 
@@ -270,8 +275,21 @@ class BST{
 
 };
 
+struct MyException : public std::exception
+{
+	const char * what () const throw ()
+    {
+    	return "C++ Exception";
+    }
+};
+
 int main(){
+	std::cout<<"Testing binary search tree basic functions"<< std::endl;
+
+	std::cout<<"Initializing tree..."<< std::endl;
 	BST<int, int> tree;
+
+	std::cout<<"Inserting random key value pairs"<< std::endl;
 	/*
 	tree.insert(std::make_pair(5,5));
 	tree.insert({2,1});
@@ -280,7 +298,6 @@ int main(){
 	tree.insert({1,5});
 	tree.insert({4,5});
 	tree.insert({7,5});
-	*/
 	for (int i=1; i<8; i++) tree.insert({i,5});
 	//tree.insert({8,5});
 	//std::cout<< tree[8] <<std::endl;
@@ -290,6 +307,7 @@ int main(){
 	//std::cout<< found->value << std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
+	*/
 	std::cout<<tree<<std::endl;
 	tree.balance();
 	std::cout<<tree<<std::endl;

@@ -146,7 +146,7 @@ class BST{
 			std::cout<<std::endl;
 
 			int bins = log2(nodes.size())/2+1;
-			int div = nodes.size()/(2*bins)+1;
+			int div = nodes.size()/(2*bins);
 			int root_id = nodes.size()/2;
 			std::cout<<"bins"<<bins<<std::endl;
 			std::cout<<"div"<<div<<std::endl;
@@ -157,6 +157,8 @@ class BST{
 				insert({nodes[root_id+bins*i]->key, nodes[root_id+bins*i]->value});
 				insert({nodes[root_id-bins*i]->key, nodes[root_id-bins*i]->value});
 			}
+			insert({nodes[root_id-div*bins]->key, nodes[root_id-div*bins]->value});
+			if (root_id+div*bins < int(nodes.size())) insert({nodes[root_id+div*bins]->key, nodes[root_id+div*bins]->value});
 
 			for (unsigned int i=0; i<nodes.size(); i++) insert({nodes[i]->key, nodes[i]->value});
 
@@ -279,7 +281,7 @@ int main(){
 	tree.insert({4,5});
 	tree.insert({7,5});
 	*/
-	for (int i=1; i<17; i++) tree.insert({i,5});
+	for (int i=1; i<8; i++) tree.insert({i,5});
 	//tree.insert({8,5});
 	//std::cout<< tree[8] <<std::endl;
 	//std::pair<int, int> a = std::make_pair(1,4);

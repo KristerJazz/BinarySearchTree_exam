@@ -134,7 +134,11 @@ class BST{
 		//Auxillary functions
 		void print();
 		void clear(){ root.reset();}
-		void balance();
+		void balance(){
+			std::vector<node> nodes;
+			iterator itr = begin();
+
+		}
 
 
 		//'INSERT' FUNCTION
@@ -142,18 +146,17 @@ class BST{
 		std::pair<iterator, bool> insert(std::pair<const key_type, value_type>&& x){
 			bool is_added = false;
 			node* itr = root.get();
+			std::cout<<"Inserting key: " << x.first <<std::endl;
 
 			//if key in key_list find() itr
 			//return std::pair<itr, false>;
 			if (!root.get()){
-				std::cout<<"Adding the first root"<<std::endl;
 				root.reset(new node(x.first, x.second));
 				is_added = true;
 				std::pair<iterator, bool> result(iterator(root.get()), is_added);
 				return result;
 			}
 
-			std::cout<<"Let's see where to put it"<<std::endl;
 			while(itr){
 				if (lesser(x.first, itr->key)){
 					if(itr->left){
@@ -215,16 +218,12 @@ class BST{
 			if(found != end()) return found->key;
 			else {
 				auto itr = insert({x,0});
+				//std::cout<<itr.first<<std::endl;
 				//return itr.first;
 			}
 		}
 
 		friend std::ostream& operator<<(std::ostream& os, BST<key_type, value_type, cmp>& x){
-
-			os << "Trying to print with iterators" << std::endl;
-			//for (const auto i: x) os<< "blah";
-				
-			os<<std::endl;
 			iterator itr = x.begin();
 			if(itr.operator->()){
 				iterator stop = x.end(); 
@@ -251,8 +250,8 @@ int main(){
 	//std::pair<int, int> a = std::make_pair(1,4);
 	//tree.insert(a);
 	auto found = tree.find(2);
-	std::cout<< found->value << std::endl;
-	std::cout<< tree[2] <<std::endl;
+	//std::cout<< found->value << std::endl;
+	//std::cout<< tree[2] <<std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
 	std::cout<<tree<<std::endl;

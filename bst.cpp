@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <math.h>
 
 
 template <typename key_type, typename value_type>
@@ -16,7 +17,6 @@ struct Node{
 	Node() noexcept = default;
 	Node(const key_type k, value_type v): key{k}, value{v}{}
 	Node(const key_type k, value_type v, Node* p): key{k}, value{v}, parent{p}{}
-
 };
 
 template < typename key_type, typename value_type>
@@ -67,8 +67,6 @@ class BSTiterator {
 		
 };
 
-
-	
 template < typename key_type, typename value_type, typename cmp = std::less<key_type> >
 class BST{
 	using node = struct Node<key_type, value_type>;
@@ -143,6 +141,25 @@ class BST{
 				++itr;
 			}
 			clear();
+
+			for (unsigned int i=0; i<nodes.size(); i++) std::cout<<nodes[i]->key<<" ";
+			std::cout<<std::endl;
+
+			int bins = log2(nodes.size())/2+1;
+			int div = nodes.size()/(2*bins)+1;
+			int root_id = nodes.size()/2;
+			std::cout<<"bins"<<bins<<std::endl;
+			std::cout<<"div"<<div<<std::endl;
+			
+			//root at midpoint
+			insert({nodes[root_id]->key, nodes[root_id]->value});
+			for(int i=1; i<div; i++){
+				insert({nodes[root_id+bins*i]->key, nodes[root_id+bins*i]->value});
+				insert({nodes[root_id-bins*i]->key, nodes[root_id-bins*i]->value});
+			}
+
+			for (unsigned int i=0; i<nodes.size(); i++) insert({nodes[i]->key, nodes[i]->value});
+
 		}
 
 
@@ -163,28 +180,34 @@ class BST{
 			}
 
 			while(itr){
-				if (lesser(x.first, itr->key)){
-					if(itr->left){
-						itr = itr->left.get();
+				if (x.first!=itr->key){
+					if (lesser(x.first, itr->key)){
+						if(itr->left){
+							itr = itr->left.get();
+						}
+						else{
+							//std::cout<<x.second<<std::endl;
+							itr->left.reset(new node(x.first, x.second, itr));
+							itr = itr->left.get();
+							break;
+						}
 					}
+
 					else{
-						//std::cout<<x.second<<std::endl;
-						itr->left.reset(new node(x.first, x.second, itr));
-						itr = itr->left.get();
-						break;
+						if(itr->right){
+							itr = itr->right.get();
+						}
+						else{
+							itr->right.reset(new node(x.first, x.second, itr));
+							itr = itr->right.get();
+							break;
+						}
+
 					}
 				}
-
-				else{
-					if(itr->right){
-						itr = itr->right.get();
-					}
-					else{
-						itr->right.reset(new node(x.first, x.second, itr));
-						itr = itr->right.get();
-						break;
-					}
-
+				else{ 
+					std::cout<<itr->key<<" already exist, this is not added"<<std::endl;
+					break;
 				}
 			}
 			std::pair<iterator, bool> result(iterator(itr), is_added);
@@ -237,11 +260,9 @@ class BST{
 					++itr;
 				}
 			}
-
 			else{
 				os << "Tree is empty" << std::endl;
 			}
-
 			return os;
 		}
 
@@ -249,14 +270,22 @@ class BST{
 
 int main(){
 	BST<int, int> tree;
+	/*
 	tree.insert(std::make_pair(5,5));
 	tree.insert({2,1});
 	tree.insert({3,5});
+	tree.insert({6,5});
+	tree.insert({1,5});
+	tree.insert({4,5});
+	tree.insert({7,5});
+	*/
+	for (int i=1; i<17; i++) tree.insert({i,5});
+	//tree.insert({8,5});
+	//std::cout<< tree[8] <<std::endl;
 	//std::pair<int, int> a = std::make_pair(1,4);
 	//tree.insert(a);
 	auto found = tree.find(2);
 	//std::cout<< found->value << std::endl;
-	//std::cout<< tree[2] <<std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
 	std::cout<<tree<<std::endl;

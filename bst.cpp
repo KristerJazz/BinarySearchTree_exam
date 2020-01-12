@@ -2,6 +2,9 @@
 #include <memory>
 #include <vector>
 #include <math.h>
+#include <algorithm>
+#include <random>
+#include <map>
 
 
 template <typename key_type, typename value_type>
@@ -183,10 +186,6 @@ class BST{
 		std::pair<iterator, bool> insert(std::pair<const key_type, value_type>&& x){
 			bool is_added = false;
 			node* itr = root.get();
-			std::cout<<"Inserting key: " << x.first <<std::endl;
-
-			//if key in key_list find() itr
-			//return std::pair<itr, false>;
 			if (!root.get()){
 				root.reset(new node(x.first, x.second));
 				is_added = true;
@@ -291,26 +290,51 @@ struct MyExceptions {
 };
 
 int main(){
+	/* TESTING BST FUNCTIONS
+
 	std::cout<<"Testing binary search tree basic functions"<< std::endl;
 
 	std::cout<<"Initializing tree..."<< std::endl;
 	BST<int, int> tree;
 
-	std::cout<<"Inserting random key value pairs"<< std::endl;
-	int N=1000;
+	int N=100;
+	std::cout<<"Inserting "<< N<< " random key value pairs"<< std::endl;
 	for (int i=0; i<N; i++) tree.insert({i,5});
-	/*
-	//tree.insert({8,5});
-	//std::cout<< tree[8] <<std::endl;
-	//std::pair<int, int> a = std::make_pair(1,4);
-	//tree.insert(a);
-	auto found = tree.find(2);
-	//std::cout<< found->value << std::endl;
-	//int a = 5;
-	//std::cout<< tree[a] <<std::endl;
-	*/
-	std::cout<<tree.size()<<std::endl;
+	auto a = std::make_pair(101,101);
+	tree.insert(a);
+	std::cout<<"Tree size after multiple insert function is " << tree.size()<<std::endl;
 	//tree.balance();
 	//std::cout<<tree<<std::endl;
+
+
+	*/ // <---- Move this line to silence this testing section or press dd15jp
+
+	/* BENCHMARKING CODES */
+	int N = 10;
+	BST<int, int> tree;
+
+	std::vector<int> digits{};
+	for(int i=0; i<N; i++) digits.push_back(i);
+
+	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
+	std::cout<<std::endl;
+
+	//RANDOM ORDER	
+	std::random_device rd;
+    std::mt19937 g(rd());
+	std::shuffle(digits.begin(), digits.end(),g);
+	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
+	std::cout<<std::endl;
+
+	//BALANCE
+
+
+	//MAP
+	std::map<int,int> std_map{};
+	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
+	std::cout<<std::endl;
+
+
+
 	return 0;
 }

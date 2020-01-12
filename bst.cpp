@@ -44,6 +44,13 @@ class BSTiterator {
 			return *this;
 		}
 		*/
+
+		friend bool operator==(const BSTiterator& a, const BSTiterator& b){
+			return a.current==b.current;
+		}
+		friend bool operator!=(const BSTiterator& a, const BSTiterator& b){
+			return a.current!=b.current;
+		}
 		
 };
 
@@ -153,10 +160,13 @@ class BST{
 		//const_iterator find(const key_type& x) const;
 		
 		//INDEXING OPERATORS
-		value_type& operator[](const key_type& x){
-		
+		//value_type& operator[](const key_type& x)
+		value_type& operator[](key_type&& x){
+			iterator found{find(x)}; 
+			if(found != end()) return found->value;
+			//else return iterator{nullptr};
 		}
-		value_type& operator[](key_type&& x);
+
 };
 
 int main(){
@@ -165,8 +175,7 @@ int main(){
 	tree.insert({2,1});
 	tree.insert({3,5});
 	tree.insert({1,4});
-	auto first = tree.begin();
 	auto found = tree.find(2);
 	std::cout << found->key <<std::endl;
-	//std::cout<< tree[2] <<std::endl;
+	std::cout<< tree[2] <<std::endl;
 }

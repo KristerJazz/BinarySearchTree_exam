@@ -125,7 +125,7 @@ class BST{
 
 		//Auxillary functions
 		void print();
-		void clear();
+		void clear(){ root.reset();}
 		void balance();
 
 

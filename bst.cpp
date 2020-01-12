@@ -135,9 +135,14 @@ class BST{
 		void print();
 		void clear(){ root.reset();}
 		void balance(){
-			std::vector<node> nodes;
+			std::vector<node*> nodes;
 			iterator itr = begin();
-
+			iterator stop = end();
+			while(itr!=stop){
+				nodes.push_back(new node{itr->key, itr->value});
+				++itr;
+			}
+			clear();
 		}
 
 
@@ -254,6 +259,8 @@ int main(){
 	//std::cout<< tree[2] <<std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
+	std::cout<<tree<<std::endl;
+	tree.balance();
 	std::cout<<tree<<std::endl;
 	return 0;
 }

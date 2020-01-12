@@ -29,13 +29,15 @@ class BSTiterator {
 		explicit BSTiterator(node *n) : current{n}{}
 
 		using iterator_category = std::forward_iterator_tag;
-		node& operator*() {return *current;}
+		key_type& operator*() {return current->key;}
 		node* operator->() const {return current;}
 
+
 		//PRE INCREMENT
-		BSTiterator& operator++() noexcept {
+		BSTiterator& operator++() noexcept{
 			node* itr = current;
 			if(itr->right){
+				itr = itr->right.get();
 				while(itr->left) itr = itr->left.get();
 				current = itr;
 			}
@@ -50,6 +52,12 @@ class BSTiterator {
 			return *this;
 		}
 
+		BSTiterator operator++(int) noexcept{
+			BSTiterator itr{*this};
+			++(*this);
+
+			return itr;
+		}
 		friend bool operator==(const BSTiterator& a, const BSTiterator& b){
 			return a.current==b.current;
 		}
@@ -203,17 +211,32 @@ class BST{
 		}
 		*/
 		value_type& operator[](key_type&& x){
-			iterator found{find(x)}; 
-			if(found != end()) return found->value;
+			iterator found = find(x); 
+			if(found != end()) return found->key;
 			else {
 				auto itr = insert({x,0});
 				//return itr.first;
 			}
 		}
 
-		friend std::ostream& operator<<(std::ostream& os, const BST& x){
-			for(const auto i:x) os << i.key << " ";
-			os << std::endl;
+		friend std::ostream& operator<<(std::ostream& os, BST<key_type, value_type, cmp>& x){
+
+			os << "Trying to print with iterators" << std::endl;
+			//for (const auto i: x) os<< "blah";
+				
+			os<<std::endl;
+			iterator itr = x.begin();
+			if(itr.operator->()){
+				iterator stop = x.end(); 
+				while (itr != stop){
+					os << itr->key<< ": " << itr->value << std::endl;
+					++itr;
+				}
+			}
+
+			else{
+				os << "Tree is empty" << std::endl;
+			}
 
 			return os;
 		}
@@ -227,9 +250,11 @@ int main(){
 	tree.insert({3,5});
 	//std::pair<int, int> a = std::make_pair(1,4);
 	//tree.insert(a);
-	//auto found = tree.find(2);
+	auto found = tree.find(2);
+	std::cout<< found->value << std::endl;
 	std::cout<< tree[2] <<std::endl;
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
-	//std::cout<<tree<<std::endl;
+	std::cout<<tree<<std::endl;
+	return 0;
 }

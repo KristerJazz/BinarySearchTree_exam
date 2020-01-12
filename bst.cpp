@@ -164,8 +164,6 @@ class BST{
 			int bins = log2(nodes.size())/2+1;
 			int div = nodes.size()/(2*bins);
 			int root_id = nodes.size()/2;
-			std::cout<<"bins"<<bins<<std::endl;
-			std::cout<<"div"<<div<<std::endl;
 			
 			//root at midpoint
 			insert({nodes[root_id]->key, nodes[root_id]->value});
@@ -220,7 +218,6 @@ class BST{
 					}
 				}
 				else{ 
-					std::cout<<itr->key<<" already exist, this is not added"<<std::endl;
 					break;
 				}
 			}

@@ -33,17 +33,22 @@ class BSTiterator {
 		node* operator->() const {return current;}
 
 		//PRE INCREMENT
-		/*
 		BSTiterator& operator++() noexcept {
-			if(current->right){
-				current = current->right
+			node* itr = current;
+			if(itr->right){
+				while(itr->left) itr = itr->left.get();
+				current = itr;
 			}
 			else{
-				current = current->parent
+				itr = current->parent;
+				while(itr and current == itr->right.get()){
+						current = itr;
+						itr = itr->parent;
+				}
+				current = itr;
 			}
 			return *this;
 		}
-		*/
 
 		friend bool operator==(const BSTiterator& a, const BSTiterator& b){
 			return a.current==b.current;
@@ -72,6 +77,30 @@ class BST{
 		//BST(BST&& b) noexcept = default;
 		//insert more constructor codes//
 
+		///////////////////////COPY//////////
+		BST(const BST &other_tree);
+		//copy-assignment
+		BST& operator= (const BST &other_tree){
+			this->clear();
+			auto tmp= other_tree;
+			(*this) = std::move(tmp);
+
+			return *this;
+		}
+		//////////////////////MOVE////////////////
+		/*
+		BST ( BST&& other_tree ) : root{ std::move( other_tree.root ) },
+			    tail{ std::move( T_other.tail ) } {}
+
+		/// move-assignment operator
+		Tree& operator= ( Tree&& T_other ) {
+
+		root = std::move( T_other.root );
+			tail = std::move( T_other.tail );
+
+			return *this;
+			}
+		*/
 		/////////////////////ITERATOR//////////////
 		using iterator = class BSTiterator<key_type, value_type>;
 		using const_iterator = class BSTiterator<const key_type, value_type>;
@@ -99,7 +128,8 @@ class BST{
 
 
 		//'INSERT' FUNCTION
-		std::pair<iterator, bool> insert(const std::pair<const key_type, value_type>& x){
+		//std::pair<iterator, bool> insert(const pair_type& x);
+		std::pair<iterator, bool> insert(std::pair<const key_type, value_type>&& x){
 			bool is_added = false;
 			node* itr = root.get();
 
@@ -142,8 +172,6 @@ class BST{
 			std::pair<iterator, bool> result(iterator(itr), is_added);
 			return result;
 		}
-		//std::pair<iterator, bool> insert(const pair_type& x);
-		//std::pair<iterator, bool> insert(pair_type&& x);
 
 		iterator find(const key_type& x){
 			node* itr = root.get();
@@ -157,25 +185,49 @@ class BST{
 			}
 			return iterator(itr);
 		}
-		//const_iterator find(const key_type& x) const;
+
+		const_iterator find(const key_type& x) const{
+			return const_iterator{find(x)};
+		};
 		
 		//INDEXING OPERATORS
-		//value_type& operator[](const key_type& x)
+		/*
+		value_type& operator[](const key_type& x){
+			iterator found{find(x)}; 
+			value_type random;
+			if(found != cend()) return found->value;
+			else return random;
+
+		}
+		*/
 		value_type& operator[](key_type&& x){
 			iterator found{find(x)}; 
+			value_type random;
 			if(found != end()) return found->value;
-			//else return iterator{nullptr};
+			else {
+				insert({x,0});
+			}
+		}
+
+		friend std::ostream& operator<<(std::ostream& os, const BST& x){
+			for(const auto i:x) os << i.key << " ";
+			os << std::endl;
+
+			return os;
 		}
 
 };
 
 int main(){
-	BST<int, char> tree;
-	tree.insert({5,4});
+	BST<int, int> tree;
+	tree.insert(std::make_pair(5,5));
 	tree.insert({2,1});
 	tree.insert({3,5});
-	tree.insert({1,4});
+	//std::pair<int, int> a = std::make_pair(1,4);
+	//tree.insert(a);
 	auto found = tree.find(2);
-	std::cout << found->key <<std::endl;
 	std::cout<< tree[2] <<std::endl;
+	//int a = 5;
+	//std::cout<< tree[a] <<std::endl;
+	//std::cout<<tree<<std::endl;
 }

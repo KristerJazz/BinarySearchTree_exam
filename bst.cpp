@@ -158,8 +158,8 @@ class BST{
 			}
 			clear();
 
-			for (unsigned int i=0; i<nodes.size(); i++) std::cout<<nodes[i]->key<<" ";
-			std::cout<<std::endl;
+			//for (unsigned int i=0; i<nodes.size(); i++) std::cout<<nodes[i]->key<<" ";
+			//std::cout<<std::endl;
 
 			int bins = log2(nodes.size())/2+1;
 			int div = nodes.size()/(2*bins);
@@ -288,6 +288,7 @@ struct MyExceptions {
 };
 
 int main(int argc, char **argv){
+	if(argc!=2) throw std::runtime_error("This code needs an N value argument.");
 	/* TESTING BST FUNCTIONS
 
 	std::cout<<"Testing binary search tree basic functions"<< std::endl;
@@ -304,12 +305,14 @@ int main(int argc, char **argv){
 	//tree.balance();
 	//std::cout<<tree<<std::endl;
 
-
 	*/ // <---- Move this line to silence this testing section or press dd15jp
 
-	int N = 5;
+
+	int N = atoi(argv[1]);
+	std::cout<<N<<",";
 	/* BENCHMARKING CODES 
-	*/
+	*/ // <---- Move this entire line to silence this benchmarking section or press dd15jp on this line
+
 	//STRAIGHT LINE
 	BST<int, int> tree;
 
@@ -319,7 +322,7 @@ int main(int argc, char **argv){
 	for(int i=0; i<N; i++) tree.insert({digits[i],digits[i]});//std::cout<<digits[i]<< " ";
 	//std::cout<<tree<<std::endl;
 	//straight timing
-	double total_elapsed; 
+	double total_elapsed{0}; 
 	for(int i=0; i<N; i++){
 		auto t0 = std::chrono::high_resolution_clock::now();
 		tree.find(i);
@@ -327,8 +330,8 @@ int main(int argc, char **argv){
 		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
 		total_elapsed+=elapsed.count();
 	}
-	std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
-	
+	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	std::cout<<total_elapsed<<","; 
 	//RANDOM ORDER	
 	//BST<int, int> random_tree;
 	tree.clear();
@@ -337,8 +340,6 @@ int main(int argc, char **argv){
     std::mt19937 g(rd());
 	std::shuffle(digits.begin(), digits.end(),g);
 	for(int i=0; i<N; i++) tree.insert({digits[i],digits[i]});//std::cout<<digits[i]<< " ";
-	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
-	//std::cout<<random_tree<<std::endl;
 
 	//random : timing
 	total_elapsed=0;
@@ -349,7 +350,8 @@ int main(int argc, char **argv){
 		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
 		total_elapsed+=elapsed.count();
 	}
-	std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	std::cout<<total_elapsed<<","; 
 	
 	//BALANCE
 	tree.balance();
@@ -362,14 +364,26 @@ int main(int argc, char **argv){
 		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
 		total_elapsed+=elapsed.count();
 	}
-	std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	std::cout<<total_elapsed<<","; 
+	tree.clear();
 	
 
 
 	//MAP
+	total_elapsed=0;
 	std::map<int,int> std_map{};
-	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
-	std::cout<<std::endl;
+	for(int i=0; i<N; i++) std_map.emplace(digits[i], digits[i]);
+
+	for(int i=0; i<N; i++){
+		auto t0 = std::chrono::high_resolution_clock::now();
+		std_map.find(i);
+		auto t1 = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
+		total_elapsed+=elapsed.count();
+	}
+	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	std::cout<<total_elapsed<<std::endl; 
 
 	return 0;
 }

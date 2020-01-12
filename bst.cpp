@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <random>
 #include <map>
-
+#include <chrono>
 
 template <typename key_type, typename value_type>
 struct Node{
@@ -310,14 +310,28 @@ int main(){
 	*/ // <---- Move this line to silence this testing section or press dd15jp
 
 	/* BENCHMARKING CODES */
-	int N = 10;
-	BST<int, int> tree;
+	//STRAIGHT LINE
+	int N = 5;
+	BST<int, int> straight_tree;
 
 	std::vector<int> digits{};
 	for(int i=0; i<N; i++) digits.push_back(i);
 
-	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
-	std::cout<<std::endl;
+	for(int i=0; i<N; i++) straight_tree.insert({i,i});//std::cout<<digits[i]<< " ";
+	//straight timing
+	double total_elapsed; 
+	for(int i=0; i<N; i++){
+		auto t0 = std::chrono::high_resolution_clock::now();
+		straight_tree.find(i);
+		auto t1 = std::chrono::high_resolution_clock::now();
+		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
+		total_elapsed+=elapsed.count();
+		std::cout << "Elapsed " << elapsed.count() << " [nanoseconds]" << std::endl;
+	}
+	std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	
+
+	
 
 	//RANDOM ORDER	
 	std::random_device rd;

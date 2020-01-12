@@ -230,8 +230,9 @@ class BST{
 
 		iterator find(const key_type& x){
 			node* itr = root.get();
+			//if(itr->key == x) return 
 			while(itr->key != x){
-				if(lesser(x, root->key)){
+				if(lesser(x, itr->key)){
 					itr = itr->left.get();
 				}
 				else{
@@ -243,9 +244,9 @@ class BST{
 			return iterator(itr);
 		}
 
-		const_iterator find(const key_type& x) const{
-			return const_iterator{find(x)};
-		};
+		//const_iterator find(const key_type& x) const{
+		//	return const_iterator{find(x)};
+		//};
 		
 		//INDEXING OPERATORS
 		/*
@@ -309,20 +310,45 @@ int main(){
 
 	*/ // <---- Move this line to silence this testing section or press dd15jp
 
-	/* BENCHMARKING CODES */
-	//STRAIGHT LINE
 	int N = 5;
-	BST<int, int> straight_tree;
+	/* BENCHMARKING CODES 
+	*/
+	//STRAIGHT LINE
+	BST<int, int> tree;
 
 	std::vector<int> digits{};
 	for(int i=0; i<N; i++) digits.push_back(i);
 
-	for(int i=0; i<N; i++) straight_tree.insert({i,i});//std::cout<<digits[i]<< " ";
+	for(int i=0; i<N; i++) tree.insert({digits[i],digits[i]});//std::cout<<digits[i]<< " ";
+	//std::cout<<tree<<std::endl;
 	//straight timing
 	double total_elapsed; 
+	//for(int i=0; i<N; i++){
+	//	auto t0 = std::chrono::high_resolution_clock::now();
+	//	tree.find(i);
+	//	auto t1 = std::chrono::high_resolution_clock::now();
+	//	auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
+	//	total_elapsed+=elapsed.count();
+	//	std::cout << "Elapsed " << elapsed.count() << " [nanoseconds]" << std::endl;
+	//}
+	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
+	
+	//RANDOM ORDER	
+	BST<int, int> random_tree;
+	//randomized order
+	std::random_device rd;
+    std::mt19937 g(rd());
+	std::shuffle(digits.begin(), digits.end(),g);
+	for(int i=0; i<N; i++) random_tree.insert({digits[i],digits[i]});//std::cout<<digits[i]<< " ";
+	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
+	//std::cout<<random_tree<<std::endl;
+
+	//random : timing
+	total_elapsed=0;
 	for(int i=0; i<N; i++){
 		auto t0 = std::chrono::high_resolution_clock::now();
-		straight_tree.find(i);
+		std::cout<<"Looking for "<< i<< std::endl;
+		random_tree.find(i);
 		auto t1 = std::chrono::high_resolution_clock::now();
 		auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(t1-t0);
 		total_elapsed+=elapsed.count();
@@ -330,15 +356,6 @@ int main(){
 	}
 	std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
 	
-
-	
-
-	//RANDOM ORDER	
-	std::random_device rd;
-    std::mt19937 g(rd());
-	std::shuffle(digits.begin(), digits.end(),g);
-	for(int i=0; i<N; i++) std::cout<<digits[i]<< " ";
-	std::cout<<std::endl;
 
 	//BALANCE
 

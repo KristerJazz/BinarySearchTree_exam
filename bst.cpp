@@ -133,7 +133,17 @@ class BST{
 		
 		void print();
 		void clear(){ root.reset();}
-		using ex = struct MyExceptions();
+		int size(){
+			iterator itr = begin();
+			iterator stop = end();
+			int count = 0;
+			while(itr!=stop){
+				++count;
+				++itr;
+			}
+			return count;
+		}
+		//using ex = struct MyExceptions();
 		void balance(){
 			//if (!root.get()) throw ex{"WATCH OUT! Empty tree cannot be balanced"};
 			std::vector<node*> nodes;
@@ -299,8 +309,8 @@ int main(){
 	//int a = 5;
 	//std::cout<< tree[a] <<std::endl;
 	*/
-	std::cout<<tree<<std::endl;
-	tree.balance();
-	std::cout<<tree<<std::endl;
+	std::cout<<tree.size()<<std::endl;
+	//tree.balance();
+	//std::cout<<tree<<std::endl;
 	return 0;
 }

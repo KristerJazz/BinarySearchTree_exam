@@ -74,7 +74,8 @@ The tree performed poorly compared to the `random` way and `std::map`.
 ### Random  vs std::map
 ![](benchmark_results/benchmark_random.png)
 This is a very interesting result.
-This shows that a random way of inserting the nodes, for very large number nodes is somehow efficient, and may perform almost as much as the efficiency of `std::map`.
+This shows that a random way of inserting the nodes, for very large number nodes is somehow efficient, and may perform almost as much as the efficiency of `std::map` especially for small number of nodes.
+Although the performance of the random way in the small number of nodes regime maybe unpredictable compared to a more intuitive but somehow naive way of balancing the tree.
 
 ## Summary
 Overall, the main take aways for me in this exam are the concepts of `templates`, c++ `struct` and `class` datatypes, and of course `ITERATORS`, `pointer` handling, and "overloading" (maybe there is a better term) of different operators such as the `subscripting` and `put-to operator` as well as the `copy` and `move` semantics.

@@ -38,6 +38,21 @@ valgrind --leak-check=full --verbose --show-leak-kinds=all ./bst.x 100
 ```
 ![](noleak.png)
 
+## Benchmarking
+I used a naive way of implementing 
+
+### Straight Line tree
+![](benchmark_results/benchmark.png)
+
+### Naive balance algorithm
+![](benchmark_results/benchmark_balance.png)
+
+### Random  vs std::map
+![](benchmark_results/benchmark_random.png)
+
+## Summary
+Overall, the main take aways for me in this exam are the concepts of `templates`, c++ `struct` and `class` datatypes, and of course `ITERATORS`, `pointer` handling, and "overloading" (maybe there is a better term) of different operators such as the `subscripting` and `put-to operator` as well as the `copy` and `move` semantics.
+
 
 ### A more organized - similar version of this code will be uploaded in the [reorganized folder](reorganized/).
 

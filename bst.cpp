@@ -20,7 +20,7 @@ struct Node{
 	Node() noexcept = default;
 	Node(const key_type k, value_type v): key{k}, value{v}{}
 	Node(const key_type k, value_type v, Node* p): key{k}, value{v}, parent{p}{}
-	Node(const std::unique_ptr<Node>& n): key{n->key}, value{n->value}, left{}t, right{}, parent{} {
+	Node(const std::unique_ptr<Node>& n): key{n->key}, value{n->value}, left{}, right{}, parent{} {
 		
 			if(n->left){
 				left = std::make_unique<Node>(n->left);
@@ -109,19 +109,6 @@ class BST{
 			return *this;
 		}
 
-		/*
-		BST ( BST&& other_tree ) : root{ std::move( other_tree.root ) },
-			    tail{ std::move( T_other.tail ) } {}
-
-		/// move-assignment operator
-		Tree& operator= ( Tree&& T_other ) {
-
-		root = std::move( T_other.root );
-			tail = std::move( T_other.tail );
-
-			return *this;
-			}
-		*/
 		/////////////////////ITERATOR//////////////
 		using iterator = class BSTiterator<key_type, value_type>;
 		using const_iterator = class BSTiterator<const key_type, value_type>;
@@ -135,11 +122,28 @@ class BST{
 			}
 			return iterator{tmp};
 		}
-		//const_iterator begin	()
-		//const_iterator cbegin const;
-		iterator end(){ return iterator{nullptr};}
-		//const_iterator end() { return const_iterator{nullptr};}
+        const_iterator begin() const noexcept {
+            node* tmp = root.get();
+            if(!tmp) return iterator{nullptr};
 
+            while (tmp->left){
+                tmp = tmp->left.get();
+            }
+            return const_iterator{tmp};
+        }
+
+		iterator end(){ return iterator{nullptr};}
+		const_iterator end() const noexcept { return const_iterator{nullptr};}
+
+        const_iterator cbegin() const noexcept {
+            node* tmp = root.get();
+            if(!tmp) return iterator{nullptr};
+
+            while (tmp->left){
+                tmp = tmp->left.get();
+            }
+            return const_iterator{tmp};
+        }
 		const_iterator cend() { return const_iterator{nullptr};}
 
 		//Auxillary functions
@@ -234,6 +238,9 @@ class BST{
 			std::pair<iterator, bool> result(iterator(itr), is_added);
 			return result;
 		}
+		//emplace
+		template <typename... Types>
+		std::pair<iterator,bool> emplace(Types&&... args);
 
 		iterator find(const key_type& x){
 			node* itr = root.get();
@@ -291,6 +298,13 @@ class BST{
 
 };
 
+template <typename key_type, typename value_type, typename cmp>
+template <typename... Types>
+std::pair<typename BST<key_type,value_type,cmp>::iterator, bool> BST<key_type,value_type,cmp>::emplace(Types&&... args)
+{
+    return insert(std::pair<const key_type, value_type>{std::forward<Types>(args)...});
+}
+
 struct MyExceptions {
 	std::string message;
 	MyExceptions(const std::string &s): message{s} {};
@@ -300,7 +314,7 @@ int main(int argc, char **argv){
 	if(argc!=2) throw std::runtime_error("This code needs an N value argument.");
 	int N = atoi(argv[1]);
 	/* TESTING BST FUNCTIONS
-	*/ // <---- Move this line to silence this testing section or press dd15jp
+	*/ // <---- Move this line to silence this testing section or press dd37jp or dd39kp
 
 	std::cout<<"Testing binary search tree basic functions"<< std::endl;
 
@@ -309,7 +323,8 @@ int main(int argc, char **argv){
 
 	std::cout<<"Inserting "<< N<< " random key value pairs"<< std::endl;
 	for (int i=0; i<N; i++) tree.insert({i,i});
-	std::cout<<"Tree size after multiple insert is " << tree.size()<<std::endl;
+	tree.emplace(6,6);
+	std::cout<<"Tree size after inserting "<< N <<" keys by insert, and 1 by emplace is " << tree.size()<<std::endl;
 	std::cout<<std::endl;
 	std::cout<<"Testing iterators" << std::endl;
 	std::cout<<tree<<std::endl;
@@ -324,13 +339,13 @@ int main(int argc, char **argv){
 	std::cout<<std::endl;
 
 	std::cout<<"Testing copy and move semantic" << std::endl;
+	//DIFFERENT MOVING AND COPYING SEMANTICS
 	BST<int, int> t2{tree}; 
 	BST<int, int> t3, t5;
-	//BST<int, std::string> temp{t1};
-	//BST<int, std::string> temp2{t1};
-	//t3 = tree;
-	//bst<int, std::string> t4 = std::move(temp);
-	//t5 = std::move(temp2);
+	BST<int, int> t4{tree};
+	t3 = tree;
+	BST<int, int> t6 = std::move(t5);
+	t5 = std::move(t4);
 	std::cout<<std::endl;
 
 	std::cout<<"Testing clearing the tree" << std::endl;
@@ -417,6 +432,6 @@ int main(int argc, char **argv){
 	tree.clear();
 	digits.clear();
 
-	*/ // <---- Move this entire line to silence this benchmarking section or press dd73jp on this line
+	*/ // <---- Move this entire line to silence this benchmarking section or press dd77kp or dd75jp on this line
 	return 0;
 }

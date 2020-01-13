@@ -20,6 +20,17 @@ struct Node{
 	Node() noexcept = default;
 	Node(const key_type k, value_type v): key{k}, value{v}{}
 	Node(const key_type k, value_type v, Node* p): key{k}, value{v}, parent{p}{}
+	Node(const std::unique_ptr<Node>& n): key{n->key}, value{n->value}, left{}t, right{}, parent{} {
+		
+			if(n->left){
+				left = std::make_unique<Node>(n->left);
+				left->parent = this;
+			}
+			if(n->right){
+				right = std::make_unique<Node>(n->right);
+				right->parent = this;
+			}
+		}
 };
 
 template < typename key_type, typename value_type>
@@ -83,21 +94,20 @@ class BST{
 
 	public:
 		BST() noexcept = default;
-		//COPY
-		BST(const BST &other_tree);
+
+		BST & operator=(BST &&tree) noexcept = default;
+  		BST(BST&& other_tree) noexcept = default;
+
+		BST(const BST &other_tree): root{}{
+			if(other_tree.root) root = std::make_unique<node>(other_tree.root);
+		}
 		//copy-assignment
 		BST& operator= (const BST &other_tree){
-			this->clear();
+			root.reset();
 			auto tmp= other_tree;
 			(*this) = std::move(tmp);
-
 			return *this;
 		}
-		//////////////////////MOVE////////////////
-  		BST(BST&& other_tree) noexcept = default;
-		//List(const List& l);
-		//List& operator=(const List& l);
-
 
 		/*
 		BST ( BST&& other_tree ) : root{ std::move( other_tree.root ) },
@@ -227,7 +237,6 @@ class BST{
 
 		iterator find(const key_type& x){
 			node* itr = root.get();
-			//if(itr->key == x) return 
 			while(itr->key != x){
 				if(lesser(x, itr->key)){
 					itr = itr->left.get();
@@ -289,30 +298,51 @@ struct MyExceptions {
 
 int main(int argc, char **argv){
 	if(argc!=2) throw std::runtime_error("This code needs an N value argument.");
+	int N = atoi(argv[1]);
 	/* TESTING BST FUNCTIONS
+	*/ // <---- Move this line to silence this testing section or press dd15jp
 
 	std::cout<<"Testing binary search tree basic functions"<< std::endl;
 
 	std::cout<<"Initializing tree..."<< std::endl;
 	BST<int, int> tree;
 
-	int N=100;
 	std::cout<<"Inserting "<< N<< " random key value pairs"<< std::endl;
-	for (int i=0; i<N; i++) tree.insert({i,5});
-	auto a = std::make_pair(101,101);
-	tree.insert(a);
-	std::cout<<"Tree size after multiple insert function is " << tree.size()<<std::endl;
-	//tree.balance();
-	//std::cout<<tree<<std::endl;
+	for (int i=0; i<N; i++) tree.insert({i,i});
+	std::cout<<"Tree size after multiple insert is " << tree.size()<<std::endl;
+	std::cout<<std::endl;
+	std::cout<<"Testing iterators" << std::endl;
+	std::cout<<tree<<std::endl;
+	std::cout<<std::endl;
 
-	*/ // <---- Move this line to silence this testing section or press dd15jp
+	std::cout<<"Testing naive balance algorithm" << std::endl;
+	tree.balance();
+	std::cout<<std::endl;
+
+	std::cout<<"Testing tree find function" << std::endl;
+	tree.find(1);
+	std::cout<<std::endl;
+
+	std::cout<<"Testing copy and move semantic" << std::endl;
+	BST<int, int> t2{tree}; 
+	BST<int, int> t3, t5;
+	//BST<int, std::string> temp{t1};
+	//BST<int, std::string> temp2{t1};
+	//t3 = tree;
+	//bst<int, std::string> t4 = std::move(temp);
+	//t5 = std::move(temp2);
+	std::cout<<std::endl;
+
+	std::cout<<"Testing clearing the tree" << std::endl;
+	tree.clear();
+	std::cout<<"Tree size after clearing is " << tree.size()<<std::endl;
+	std::cout<<std::endl;
 
 
-	int N = atoi(argv[1]);
-	std::cout<<N<<",";
+
 	/* BENCHMARKING CODES 
-	*/ // <---- Move this entire line to silence this benchmarking section or press dd15jp on this line
 
+	std::cout<<N<<",";
 	//STRAIGHT LINE
 	BST<int, int> tree;
 
@@ -384,6 +414,9 @@ int main(int argc, char **argv){
 	}
 	//std::cout << "Total elapsed " << total_elapsed<< " [nanoseconds]" << std::endl;
 	std::cout<<total_elapsed<<std::endl; 
+	tree.clear();
+	digits.clear();
 
+	*/ // <---- Move this entire line to silence this benchmarking section or press dd73jp on this line
 	return 0;
 }

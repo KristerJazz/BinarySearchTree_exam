@@ -27,10 +27,19 @@ A [jobscript](job.sh) is also uploaded to run the benchmarking code for increasi
 By commenting out the benchmarking code and uncommenting the testing section of the main function.
 
 We will be able to see the following results.
+The success of this run means that all the following components are working:
+
+- [x] insert
+- [x] clear
+- [x] begin
+- [x] end
+- [x] find
+- [x] balance
+- [x] subcripting operator
+- [x] put-to operator
+- [x] copy and move semantics
 
 ![](test_functions.png)
-
-
 
 No memory leaks is observed using the following code and shown by the screenshot.
 ```

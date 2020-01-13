@@ -28,7 +28,7 @@ By commenting out the benchmarking code and uncommenting the testing section of 
 
 We will be able to see the following results.
 
-![](function_test_results.png)
+![](test_functions.png)
 
 
 
